@@ -3,4 +3,5 @@
 MANIFEST.in
 local_*
 adsilib/my_library.pickle
+adsilib/my_library.bib
 adsilib/token.txt
