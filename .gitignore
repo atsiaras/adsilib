@@ -1,0 +1,6 @@
+*.pyc
+*.egg-info/
+MANIFEST.in
+local_*
+adsilib/my_library.pickle
+adsilib/token.txt
