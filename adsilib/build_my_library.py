@@ -40,7 +40,7 @@ class DataBase:
         self.token_file = os.path.join(self.here, 'token.txt')
         if os.path.isfile(self.token_file):
             self.token = open(self.token_file).readlines()[0].split()[0]
-            ads.config.token = self.token
+            ads.config.token = '{0}'.format(self.token)
         else:
             self.token = input_line('   Please provide token. To obtain a token please: \n' +
                                     '   1. Visit https://ui.adsabs.harvard.edu/ \n' +
@@ -215,7 +215,7 @@ class DataBase:
 
         if bibcode in self.database:
             similar = []
-            if self.database[bibcode]['call'].split('_') > 1:
+            if len(self.database[bibcode]['call'].split('_')) > 1:
                 for i in self.database:
                     if i != bibcode:
                         if self.database[i]['call'].split('_')[0] == self.database[bibcode]['call'].split('_')[0]:

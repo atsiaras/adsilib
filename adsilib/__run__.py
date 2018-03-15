@@ -16,18 +16,6 @@ else:
     import tkSimpleDialog
 
 
-my_library = DataBase()
-
-global token
-here = os.path.abspath(os.path.dirname(__file__))
-token_file = os.path.join(here, 'token.txt')
-if os.path.isfile(token_file):
-    token = open(token_file).readlines()[0].split()
-    ads.config.token = token
-else:
-    token = None
-
-
 def setup_window(window, objects, title_font=None, main_font=None, button_font=None, entries_bd=3):
 
     if button_font is None:
@@ -150,6 +138,8 @@ def finalise_window(window, position=5):
 
 def run_app():
 
+    my_library = DataBase()
+
     global papers, papers_dic
     papers = []
     papers_dic = {}
@@ -159,21 +149,7 @@ def run_app():
         if not entry:
             pass
 
-        global papers, papers_dic, token
-
-        if not token:
-            token = tkSimpleDialog.askstring('Please provide token.',
-                                             'To obtain a token please: \n' +
-                                             '1. Visit https://ui.adsabs.harvard.edu/ \n' +
-                                             '2. Log in \n' +
-                                             '3. Go to Account -> Customize settings (up right) \n' +
-                                             '4. Go to API Token (down left) \n' +
-                                             '5. Click on Generate a new key \n' +
-                                             '6. Copy the new key here.')
-            ads.config.token = token
-            w = open(token_file, 'w')
-            w.write(token)
-            w.close()
+        global papers, papers_dic
 
         papers = ads.SearchQuery(q=entry1.get(),
                                  fl=['bibcode', 'title', 'author', 'year', 'citation_count', 'abstract'])
