@@ -290,6 +290,10 @@ def run_app():
         entry42.delete(0, END)
         entry42.insert(0, tex_file)
 
+    def update_library():
+        my_library.update_library()
+        tkMessageBox.showinfo('Updating library for arXiv papers.', 'Update completed')
+
     root = Tk()
     xx = root.winfo_screenwidth() / 2
     yy = root.winfo_screenheight() / 2
@@ -318,6 +322,7 @@ def run_app():
     frame3.pack()
 
     frame4 = Frame(root)
+    button40 = Button(frame4, text="Update library for arXiv papers", command=update_library)
     button41 = Button(frame4, text="Choose .bib file", command=choose_bib_file)
     entry41 = Entry(frame4, width=30)
     button42 = Button(frame4, text="Update .bib file", command=update_bib_file)
@@ -326,7 +331,7 @@ def run_app():
     button44 = Button(frame4, text="Compile .tex file", command=compile_tex)
     button45 = Button(frame4, text="Update .bib file and compile .tex file", command=update_bib_compile_tex)
     setup_window(frame4,
-                 [[],
+                 [[[button40, 1]],
                   [[button41, 0], [entry41, 1], [button42, 2]],
                   [[button43, 0], [entry42, 1], [button44, 2]],
                   [[button45, 1]],

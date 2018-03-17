@@ -57,6 +57,7 @@ class DataBase:
     def add_to_library(self, bibcode):
 
         if len(bibcode.split('arXiv')) == 2:
+            print(bibcode)
             try:
                 connection = 0
                 while connection == 0:
@@ -208,7 +209,7 @@ class DataBase:
 
     def update_library(self):
 
-        for i in self.database:
+        for i in list(self.database):
             self.add_to_library(i)
 
     def search_library(self, bibcode):
