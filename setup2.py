@@ -1,11 +1,9 @@
+from __future__ import absolute_import
 import platform
 import os
+from adsilib import __get_abspath__
 
 name = 'adsilib'
-
-os.chdir(os.path.expanduser('~'))
-
-from adsilib import __get_abspath__
 
 app_dir = __get_abspath__()
 system = platform.system()
