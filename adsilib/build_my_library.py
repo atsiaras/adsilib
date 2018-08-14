@@ -98,26 +98,22 @@ class DataBase:
                         self.database[bibcode]['bibtex'].replace('{' + old_call, '{' + new_call)
                     self.database[bibcode]['call'] = new_call
 
-                    calls = [self.database[ff]['call'].split('_')[0] for ff in self.database]
+                    calls = [self.database[ff]['call'].split('B')[0] for ff in self.database]
                     for i in self.database:
                         if calls.count(self.database[i]['call']) > 1:
                             old_call = self.database[i]['call']
-                            new_call = self.database[i]['call'].split('_')[0] + '_' + i
+                            new_call = self.database[i]['call'].split('B')[0] + 'B' + i
                             new_call = new_call.replace('&', 'a')
                             self.database[i]['bibtex'] = \
                                 self.database[i]['bibtex'].replace('{' + old_call, '{' + new_call)
                             self.database[i]['call'] = new_call
 
-                    pickle.dump(self.database, open(self.database_path, 'wb'))
-
-                    w = open(self.bib_path, 'w')
-                    for i in self.database:
-                        w.write(self.database[i]['bibtex'])
-                        w.write('\n')
-                    w.close()
-
                 except requests.ConnectionError:
                     time.sleep(1)
+
+        self.update_library_pickle()
+
+        self.update_library_bib()
 
     def multi_add_to_library(self, bibcodes):
 
@@ -189,21 +185,46 @@ class DataBase:
                     except requests.ConnectionError:
                         time.sleep(1)
 
-        calls = [self.database[ff]['call'].split('_')[0] for ff in self.database]
+        calls = [self.database[ff]['call'].split('B')[0] for ff in self.database]
         for i in self.database:
             if calls.count(self.database[i]['call']) > 1:
                 old_call = self.database[i]['call']
-                new_call = self.database[i]['call'].split('_')[0] + '_' + i
+                new_call = self.database[i]['call'].split('B')[0] + 'B' + i
                 new_call = new_call.replace('&', 'a')
                 self.database[i]['bibtex'] = \
                     self.database[i]['bibtex'].replace('{' + old_call, '{' + new_call)
                 self.database[i]['call'] = new_call
 
+        self.update_library_pickle()
+
+        self.update_library_bib()
+
+    def replace_splitter(self, old, new):
+
+        for i in self.database:
+            old_call = self.database[i]['call']
+            new_call = old_call.replace(old, new)
+            self.database[i]['bibtex'] = \
+                self.database[i]['bibtex'].replace('{' + old_call, '{' + new_call)
+            self.database[i]['call'] = self.database[i]['call'].replace(old, new)
+
+        self.update_library_pickle()
+
+        self.update_library_bib()
+
+    def update_library_pickle(self):
+
         pickle.dump(self.database, open(self.database_path, 'wb'))
+
+    def update_library_bib(self):
 
         w = open(self.bib_path, 'w')
         for i in self.database:
-            w.write(self.database[i]['bibtex'])
+            bibtex = self.database[i]['bibtex']
+            bibtex = bibtex.replace('{\\$}\\eta{\\_}{\\{}\\mathrm{\\{}\\oplus{\\}}{\\}}{\\$}', '$\\eta_\\oplus$')
+            bibtex = bibtex.replace('$\\lt$', '$<$')
+            bibtex = bibtex.replace('$\\gt$', '$>$')
+            w.write(bibtex)
             w.write('\n\n\n')
         w.close()
 
@@ -216,10 +237,10 @@ class DataBase:
 
         if bibcode in self.database:
             similar = []
-            if len(self.database[bibcode]['call'].split('_')) > 1:
+            if len(self.database[bibcode]['call'].split('B')) > 1:
                 for i in self.database:
                     if i != bibcode:
-                        if self.database[i]['call'].split('_')[0] == self.database[bibcode]['call'].split('_')[0]:
+                        if self.database[i]['call'].split('B')[0] == self.database[bibcode]['call'].split('B')[0]:
                             similar.append(self.database[i])
             return self.database[bibcode], similar
         else:
