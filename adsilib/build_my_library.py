@@ -93,11 +93,11 @@ class DataBase:
 
                     old_call = self.database[bibcode]['call']
                     new_call = a.author[0].split(',')[0].replace(' ', '').replace('-', '') + bibcode[:4]
-                    new_call = ud.normalize('NFKD', new_call).encode('ascii', 'ignore')
+                    new_call = ud.normalize('NFKD', new_call).encode('ascii', 'ignore').decode("utf-8")
+                    print(str(new_call))
                     self.database[bibcode]['bibtex'] = \
-                        self.database[bibcode]['bibtex'].replace('{' + old_call, '{' + new_call)
-                    self.database[bibcode]['call'] = new_call
-
+                        self.database[bibcode]['bibtex'].replace('{0}{1}'.format('{', old_call), '{0}{1}'.format('{', new_call))
+                    self.database[bibcode]['call'] = new_call 
                     calls = [self.database[ff]['call'].split('B')[0] for ff in self.database]
                     for i in self.database:
                         if calls.count(self.database[i]['call']) > 1:
@@ -105,7 +105,7 @@ class DataBase:
                             new_call = self.database[i]['call'].split('B')[0] + 'B' + i
                             new_call = new_call.replace('&', 'a')
                             self.database[i]['bibtex'] = \
-                                self.database[i]['bibtex'].replace('{' + old_call, '{' + new_call)
+                                self.database[i]['bibtex'].replace('{0}{1}'.format('{', old_call), '{0}{1}'.format('{', new_call))
                             self.database[i]['call'] = new_call
 
                 except requests.ConnectionError:
@@ -177,10 +177,10 @@ class DataBase:
 
                         old_call = self.database[bibcode]['call']
                         new_call = a.author[0].split(',')[0].replace(' ', '').replace('-', '') + bibcode[:4]
-                        new_call = ud.normalize('NFKD', new_call).encode('ascii', 'ignore')
+                        new_call = ud.normalize('NFKD', new_call).encode('ascii', 'ignore').decode("utf-8")
                         new_call = new_call.replace('&', 'a')
                         self.database[bibcode]['bibtex'] = \
-                            self.database[bibcode]['bibtex'].replace('{' + old_call, '{' + new_call)
+                            self.database[bibcode]['bibtex'].replace('{0}{1}'.format('{', old_call), '{0}{1}'.format('{', new_call))
                         self.database[bibcode]['call'] = new_call
                     except requests.ConnectionError:
                         time.sleep(1)
@@ -192,7 +192,7 @@ class DataBase:
                 new_call = self.database[i]['call'].split('B')[0] + 'B' + i
                 new_call = new_call.replace('&', 'a')
                 self.database[i]['bibtex'] = \
-                    self.database[i]['bibtex'].replace('{' + old_call, '{' + new_call)
+                    self.database[i]['bibtex'].replace('{0}{1}'.format('{', old_call), '{0}{1}'.format('{', new_call))
                 self.database[i]['call'] = new_call
 
         self.update_library_pickle()
@@ -205,7 +205,7 @@ class DataBase:
             old_call = self.database[i]['call']
             new_call = old_call.replace(old, new)
             self.database[i]['bibtex'] = \
-                self.database[i]['bibtex'].replace('{' + old_call, '{' + new_call)
+                self.database[i]['bibtex'].replace('{0}{1}'.format('{', old_call), '{0}{1}'.format('{', new_call))
             self.database[i]['call'] = self.database[i]['call'].replace(old, new)
 
         self.update_library_pickle()
@@ -214,7 +214,7 @@ class DataBase:
 
     def update_library_pickle(self):
 
-        pickle.dump(self.database, open(self.database_path, 'wb'))
+        pickle.dump(self.database, open(self.database_path, 'wb'), protocol=2)
 
     def update_library_bib(self):
 
